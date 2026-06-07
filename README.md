@@ -468,7 +468,67 @@ To only return items of a certain type from a collection request (this is called
 client
   .directoryObjects()
   .filter(User.class)
-  .forEach(System.out::println);
+   .forEach(System.out::println);
+```
+
+## Type-safe queries
+
+The generated `*_` metamodel classes let you build `$select`, `$filter`, `$expand`, and `$orderby` expressions with compile-time safety instead of raw strings. Enable generation by adding `<typeSafe>true</typeSafe>` to a schema in your plugin configuration:
+
+```xml
+<configuration>
+  <schemas>
+    <schema>
+      <namespace>Your.Namespace</namespace>
+      <packageName>your.package</packageName>
+      <typeSafe>true</typeSafe>
+    </schema>
+  </schemas>
+</configuration>
+```
+
+For each entity and complex type (e.g. `Person`, `Location`) a sibling class (`Person_`, `Location_`) is generated in the same package with typed descriptors:
+
+```java
+import static your.package.Person_.*;
+
+// $select -- type-checked property names
+client.persons()
+    .select(userName, firstName)
+    .stream() ...
+
+// $filter -- typed operators (eq, ne, gt, ge, lt, le, and, or, not)
+client.persons()
+    .filter(userName.eq("bob").and(firstName.ne("alice")))
+    .stream() ...
+
+// $orderby -- ascending / descending
+client.persons()
+    .orderBy(lastName.asc(), firstName.desc())
+    .stream() ...
+
+// $expand -- type-safe navigation nesting
+client.persons()
+    .expand(trips.select(tripName))
+    .stream() ...
+```
+
+Complex type and enum properties are fully typed:
+
+```java
+// gender is PersonGender enum, addressInfo is Location complex type
+client.persons()
+    .filter(gender.eq(PersonGender.MALE))
+    .select(addressInfo)
+    .stream() ...
+```
+
+Filter operators on collections (`any`/`all`) are also supported:
+
+```java
+client.persons()
+    .filter(trips.any(t -> t.name.contains("Paris")))
+    .stream() ...
 ```
 
 ### Updating Microsoft Graph metadata

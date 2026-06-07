@@ -69,8 +69,28 @@ public abstract class EntityRequest<T extends ODataEntityType> {
         return builder().select(clause);
     }
 
+    public EntityRequestOptionsBuilder<T> select(PropertyCollection<? super T> properties) {
+        return builder().select(properties);
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> select(Property<?, ? super T>... properties) {
+        return builder().select(properties);
+    }
+
     public EntityRequestOptionsBuilder<T> expand(String clause) {
         return builder().expand(clause);
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        return builder().expand(navigations);
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> orderBy(OrderBy<? super T>... orderings) {
+        return builder().orderBy(orderings);
     }
 
     public EntityRequestOptionsBuilder<T> metadataFull() {

@@ -143,12 +143,28 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).expand(clause);
     }
 
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).expand(navigations);
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> filter(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).filter(clause);
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> filter(FilterExpression<? super T> filter) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).filter(filter);
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> orderBy(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).orderBy(clause);
+    }
+
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> orderBy(
+            OrderBy<? super T>... orderings) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).orderBy(orderings);
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> skip(long n) {
@@ -161,6 +177,17 @@ public class CollectionPageEntityRequest<T extends ODataEntityType, R extends En
 
     public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
         return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(clause);
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> select(
+            PropertyCollection<? super T> properties) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(properties);
+    }
+
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> select(
+            Property<?, ? super T>... properties) {
+        return new CollectionEntityRequestOptionsBuilder<T, R>(this).select(properties);
     }
 
     public CollectionEntityRequestOptionsBuilder<T, R> metadataFull() {

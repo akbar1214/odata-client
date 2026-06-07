@@ -162,8 +162,18 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).filter(clause);
     }
 
+    public CollectionNonEntityRequestOptionsBuilder<T> filter(FilterExpression<? super T> filter) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).filter(filter);
+    }
+
     public CollectionNonEntityRequestOptionsBuilder<T> orderBy(String clause) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).orderBy(clause);
+    }
+
+    @SafeVarargs
+    public final CollectionNonEntityRequestOptionsBuilder<T> orderBy(
+            OrderBy<? super T>... orderings) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).orderBy(orderings);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> skip(long n) {
@@ -176,6 +186,17 @@ public class CollectionPageNonEntityRequest<T> implements Iterable<T> {
 
     public CollectionNonEntityRequestOptionsBuilder<T> select(String clause) {
         return new CollectionNonEntityRequestOptionsBuilder<T>(this).select(clause);
+    }
+
+    public CollectionNonEntityRequestOptionsBuilder<T> select(
+            PropertyCollection<? super T> properties) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).select(properties);
+    }
+
+    @SafeVarargs
+    public final CollectionNonEntityRequestOptionsBuilder<T> select(
+            Property<?, ? super T>... properties) {
+        return new CollectionNonEntityRequestOptionsBuilder<T>(this).select(properties);
     }
 
     public CollectionNonEntityRequestOptionsBuilder<T> metadataFull() {

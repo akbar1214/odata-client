@@ -179,6 +179,16 @@ public final class Generator {
 			Util.types(schema, TComplexType.class) //
 					.forEach(x -> writeComplexType(schema, x));
 
+			// write metamodel classes (User_, etc.) when typeSafe generation is enabled
+			if (names.getOptions(schema).typeSafe()) {
+				log("  writing metamodel classes");
+				MetamodelWriter mm = new MetamodelWriter(names);
+				Util.types(schema, TEntityType.class) //
+						.forEach(x -> mm.write(schema, x));
+				Util.types(schema, TComplexType.class) //
+						.forEach(x -> mm.writeComplex(schema, x));
+			}
+
 			// write entity collection requests
 			log("  writing entity collection requests");
 			Util.types(schema, TEntityType.class) //

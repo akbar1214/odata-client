@@ -448,6 +448,20 @@ public final class Names {
                 getSimpleClassNameEntity(schema, name) + ".java");
     }
 
+    public File getClassFileMetamodel(Schema schema, String name) {
+        return new File(getDirectoryEntity(schema),
+                getSimpleClassNameMetamodel(schema, name) + ".java");
+    }
+
+    public String getSimpleClassNameMetamodel(Schema schema, String name) {
+        SchemaOptions o = getOptions(schema);
+        return Names.toSimpleClassName(name) + o.metamodelSuffix();
+    }
+
+    public String getFullClassNameMetamodel(Schema schema, String name) {
+        return getPackageEntity(schema) + "." + getSimpleClassNameMetamodel(schema, name);
+    }
+
     public String getPackageComplexType(Schema schema) {
         SchemaOptions o = getOptions(schema);
         return o.pkg() + o.packageSuffixComplexType();

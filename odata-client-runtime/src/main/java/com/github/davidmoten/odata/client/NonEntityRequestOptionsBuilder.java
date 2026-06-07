@@ -33,9 +33,40 @@ public final class NonEntityRequestOptionsBuilder<T> {
         return this;
     }
 
+    public NonEntityRequestOptionsBuilder<T> select(PropertyCollection<? super T> properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(properties.text());
+        return this;
+    }
+
+    @SafeVarargs
+    public final NonEntityRequestOptionsBuilder<T> select(Property<?, ? super T>... properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(PropertyCollection.of(properties).text());
+        return this;
+    }
+
     public NonEntityRequestOptionsBuilder<T> expand(String clause) {
         Preconditions.checkNotNull(clause);
         this.expand = Optional.of(clause);
+        return this;
+    }
+
+    @SafeVarargs
+    public final NonEntityRequestOptionsBuilder<T> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        Preconditions.checkNotNull(navigations);
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (NavigationProperty<? super T, ?, ?> n : navigations) {
+            Preconditions.checkNotNull(n);
+            if (!first) {
+                sb.append(',');
+            }
+            sb.append(n.text());
+            first = false;
+        }
+        this.expand = Optional.of(sb.toString());
         return this;
     }
 

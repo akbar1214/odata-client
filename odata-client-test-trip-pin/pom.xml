@@ -52,6 +52,8 @@
                         </goals>
                         <configuration>
                             <metadata>src/main/odata/odata-test-service-trip-pin-metadata.xml</metadata>
+                            <typeSafe>true</typeSafe>
+                            <metamodelSuffix>_</metamodelSuffix>
                             <schemas>
                                 <schema>
                                     <namespace>Microsoft.OData.SampleService.Models.TripPin</namespace>

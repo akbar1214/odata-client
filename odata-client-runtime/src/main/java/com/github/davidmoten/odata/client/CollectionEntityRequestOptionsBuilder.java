@@ -93,15 +93,47 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
         return this;
     }
 
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        Preconditions.checkNotNull(navigations);
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (NavigationProperty<? super T, ?, ?> n : navigations) {
+            Preconditions.checkNotNull(n);
+            if (!first) {
+                sb.append(',');
+            }
+            sb.append(n.text());
+            first = false;
+        }
+        this.expand = Optional.of(sb.toString());
+        return this;
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> filter(String clause) {
         Preconditions.checkNotNull(clause);
         this.filter = Optional.of(clause);
         return this;
     }
 
+    public CollectionEntityRequestOptionsBuilder<T, R> filter(FilterExpression<? super T> filter) {
+        Preconditions.checkNotNull(filter);
+        this.filter = Optional.of(filter.text());
+        return this;
+    }
+
     public CollectionEntityRequestOptionsBuilder<T, R> orderBy(String clause) {
         Preconditions.checkNotNull(clause);
         this.orderBy = Optional.of(clause);
+        return this;
+    }
+
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> orderBy(
+            OrderBy<? super T>... orderings) {
+        Preconditions.checkNotNull(orderings);
+        this.orderBy = Optional.of(OrderBy.join(orderings));
         return this;
     }
 
@@ -120,6 +152,21 @@ public final class CollectionEntityRequestOptionsBuilder<T extends ODataEntityTy
     public CollectionEntityRequestOptionsBuilder<T, R> select(String clause) {
         Preconditions.checkNotNull(clause);
         this.select = Optional.of(clause);
+        return this;
+    }
+
+    public CollectionEntityRequestOptionsBuilder<T, R> select(
+            PropertyCollection<? super T> properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(properties.text());
+        return this;
+    }
+
+    @SafeVarargs
+    public final CollectionEntityRequestOptionsBuilder<T, R> select(
+            Property<?, ? super T>... properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(PropertyCollection.of(properties).text());
         return this;
     }
 

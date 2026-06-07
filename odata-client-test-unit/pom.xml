@@ -112,6 +112,7 @@
                         </goals>
                         <configuration>
                             <metadata>src/main/odata/metadata5.xml</metadata>
+                            <typeSafe>true</typeSafe>
                         </configuration>
                     </execution>
                     <execution>

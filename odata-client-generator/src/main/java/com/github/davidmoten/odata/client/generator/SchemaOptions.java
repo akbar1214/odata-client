@@ -19,9 +19,12 @@ public class SchemaOptions {
     public final boolean pageComplexTypes;
     public final boolean failOnMissingEntitySet;
     public final Set<String> enumDefaultValues;
-    
+    public final boolean typeSafe;
+    public final String metamodelSuffix;
+
     // TODO make configurable
     private static final String PACKAGE_SUFFIX_COMPLEX_TYPE_COLLECTION_REQUEST = ".complex.collection.request";
+    private static final String DEFAULT_METAMODEL_SUFFIX = "_";
 
     public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
             String packageSuffixEntity, String packageSuffixComplexType,
@@ -31,6 +34,21 @@ public class SchemaOptions {
             String collectionRequestClassSuffix, String entityRequestClassSuffix,
             boolean pageComplexTypes, boolean failOnMissingEntitySet, //
             Set<String> enumDefaultValues) {
+        this(namespace, pkg, packageSuffixEnum, packageSuffixEntity, packageSuffixComplexType,
+                packageSuffixEntityRequest, packageSuffixCollectionRequest, packageSuffixContainer,
+                packageSuffixSchema, simpleClassNameSchema, collectionRequestClassSuffix,
+                entityRequestClassSuffix, pageComplexTypes, failOnMissingEntitySet, enumDefaultValues,
+                false, DEFAULT_METAMODEL_SUFFIX);
+    }
+
+    public SchemaOptions(String namespace, String pkg, String packageSuffixEnum,
+            String packageSuffixEntity, String packageSuffixComplexType,
+            String packageSuffixEntityRequest, String packageSuffixCollectionRequest,
+            String packageSuffixContainer,
+            String packageSuffixSchema, String simpleClassNameSchema,
+            String collectionRequestClassSuffix, String entityRequestClassSuffix,
+            boolean pageComplexTypes, boolean failOnMissingEntitySet, //
+            Set<String> enumDefaultValues, boolean typeSafe, String metamodelSuffix) {
         this.namespace = namespace;
         this.pkg = pkg;
         this.packageSuffixEnum = packageSuffixEnum;
@@ -46,11 +64,14 @@ public class SchemaOptions {
         this.pageComplexTypes = pageComplexTypes;
         this.failOnMissingEntitySet = failOnMissingEntitySet;
         this.enumDefaultValues = enumDefaultValues;
+        this.typeSafe = typeSafe;
+        this.metamodelSuffix = metamodelSuffix;
     }
 
     public SchemaOptions(String namespace, String pkg) {
         this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request",
-                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true, Collections.emptySet());
+                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true, Collections.emptySet(),
+                false, DEFAULT_METAMODEL_SUFFIX);
     }
 
     public String pkg() {
@@ -112,6 +133,18 @@ public class SchemaOptions {
     
     public Set<String> enumDefaultValues() {
         return enumDefaultValues;
+    }
+
+    public boolean typeSafe() {
+        return typeSafe;
+    }
+
+    public String metamodelSuffix() {
+        return metamodelSuffix == null ? DEFAULT_METAMODEL_SUFFIX : metamodelSuffix;
+    }
+
+    public String metamodelClassName(String baseName) {
+        return baseName + metamodelSuffix();
     }
 
 }

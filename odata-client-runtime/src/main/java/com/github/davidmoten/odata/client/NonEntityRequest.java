@@ -28,8 +28,23 @@ public abstract class NonEntityRequest<T> {
         return new NonEntityRequestOptionsBuilder<T>(this).select(clause);
     }
 
+    public NonEntityRequestOptionsBuilder<T> select(PropertyCollection<? super T> properties) {
+        return new NonEntityRequestOptionsBuilder<T>(this).select(properties);
+    }
+
+    @SafeVarargs
+    public final NonEntityRequestOptionsBuilder<T> select(Property<?, ? super T>... properties) {
+        return new NonEntityRequestOptionsBuilder<T>(this).select(properties);
+    }
+
     public NonEntityRequestOptionsBuilder<T> expand(String clause) {
         return new NonEntityRequestOptionsBuilder<T>(this).expand(clause);
+    }
+
+    @SafeVarargs
+    public final NonEntityRequestOptionsBuilder<T> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        return new NonEntityRequestOptionsBuilder<T>(this).expand(navigations);
     }
 
     public NonEntityRequestOptionsBuilder<T> metadataFull() {

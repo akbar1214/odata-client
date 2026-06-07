@@ -43,9 +43,47 @@ public final class EntityRequestOptionsBuilder<T extends ODataEntityType> {
         return this;
     }
 
+    public EntityRequestOptionsBuilder<T> select(PropertyCollection<? super T> properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(properties.text());
+        return this;
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> select(Property<?, ? super T>... properties) {
+        Preconditions.checkNotNull(properties);
+        this.select = Optional.of(PropertyCollection.of(properties).text());
+        return this;
+    }
+
     public EntityRequestOptionsBuilder<T> expand(String clause) {
         Preconditions.checkNotNull(clause);
         this.expand = Optional.of(clause);
+        return this;
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> expand(
+            NavigationProperty<? super T, ?, ?>... navigations) {
+        Preconditions.checkNotNull(navigations);
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (NavigationProperty<? super T, ?, ?> n : navigations) {
+            Preconditions.checkNotNull(n);
+            if (!first) {
+                sb.append(',');
+            }
+            sb.append(n.text());
+            first = false;
+        }
+        this.expand = Optional.of(sb.toString());
+        return this;
+    }
+
+    @SafeVarargs
+    public final EntityRequestOptionsBuilder<T> orderBy(OrderBy<? super T>... orderings) {
+        Preconditions.checkNotNull(orderings);
+        this.queries.put("$orderby", OrderBy.join(orderings));
         return this;
     }
 

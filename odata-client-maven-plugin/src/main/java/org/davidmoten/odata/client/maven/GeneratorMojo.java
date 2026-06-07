@@ -50,9 +50,15 @@ public class GeneratorMojo extends AbstractMojo {
 
     @Parameter(name = "pageComplexTypes", required = false, defaultValue = "true")
     boolean pageComplexTypes;
-    
-    @Parameter(name="enumDefaultValues", required = false) 
+
+    @Parameter(name="enumDefaultValues", required = false)
     List<String> enumDefaultValues;
+
+    @Parameter(name = "typeSafe", required = false, defaultValue = "false")
+    boolean typeSafe;
+
+    @Parameter(name = "metamodelSuffix", required = false, defaultValue = "_")
+    String metamodelSuffix;
 
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
@@ -68,6 +74,11 @@ public class GeneratorMojo extends AbstractMojo {
         if (enumDefaultValues == null) {
             enumDefaultValues = Collections.emptyList();
         }
+        if (metamodelSuffix == null) {
+            metamodelSuffix = "_";
+        }
+        final String metamodelSuffixFinal = metamodelSuffix;
+        final boolean typeSafeFinal = typeSafe;
         List<SchemaOptions> schemaOptionsList = schemas.stream()
                 .map(s -> new SchemaOptions(s.namespace, s.packageName, s.packageSuffixEnum,
                         s.packageSuffixEntity, s.packageSuffixComplexType,
@@ -76,8 +87,9 @@ public class GeneratorMojo extends AbstractMojo {
                         s.packageSuffixSchema, s.simpleClassNameSchema,
                         s.collectionRequestClassSuffix, s.entityRequestClassSuffix,
                         s.pageComplexTypes, //
-                        s.failOnMissingEntitySet, 
-                        new HashSet<>(enumDefaultValues)))
+                        s.failOnMissingEntitySet,
+                        new HashSet<>(enumDefaultValues),
+                        typeSafeFinal, metamodelSuffixFinal))
                 .collect(Collectors.toList());
 
         InputStream is = null;
@@ -126,12 +138,17 @@ public class GeneratorMojo extends AbstractMojo {
                             getLog().info("schema options not found so autogenerating for namespace=" + schema.getNamespace());
                             return Stream.of(new SchemaOptions(schema.getNamespace(),
                                     blankIfNull(autoPackagePrefix)
-                                            + toPackage(schema.getNamespace())));
+                                            + toPackage(schema.getNamespace()),
+                                    ".enums", ".entity", ".complex", ".entity.request",
+                                    ".collection.request", ".container", ".schema", "SchemaInfo",
+                                    "CollectionRequest", "EntityRequest", true, true,
+                                    Collections.emptySet(), typeSafeFinal, metamodelSuffixFinal));
                         }
                     }) //
                     .collect(Collectors.toList());
 
-            Options options = new Options(outputDirectory.getAbsolutePath(), schemaOptionsList2);
+            Options options = new Options(outputDirectory.getAbsolutePath(), schemaOptionsList2,
+                    typeSafeFinal);
             Generator g = new Generator(options, schemas);
             g.generate();
         } catch (Throwable e) {
