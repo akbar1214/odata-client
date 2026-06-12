@@ -69,8 +69,9 @@ public class SchemaOptions {
     }
 
     public SchemaOptions(String namespace, String pkg) {
-        this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request", ".collection.request",
-                ".container", ".schema", "SchemaInfo", "CollectionRequest", "EntityRequest", true, true, Collections.emptySet(),
+        this(namespace, pkg, ".enums", ".entity", ".complex", ".entity.request",
+                ".entity.collection.request",
+                ".container", ".schema", "SchemaInfo", "CollectionRequest", "Request", true, true, Collections.emptySet(),
                 false, DEFAULT_METAMODEL_SUFFIX);
     }
 

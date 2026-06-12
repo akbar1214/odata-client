@@ -140,8 +140,8 @@ public class GeneratorMojo extends AbstractMojo {
                                     blankIfNull(autoPackagePrefix)
                                             + toPackage(schema.getNamespace()),
                                     ".enums", ".entity", ".complex", ".entity.request",
-                                    ".collection.request", ".container", ".schema", "SchemaInfo",
-                                    "CollectionRequest", "EntityRequest", true, true,
+                                    ".entity.collection.request", ".container", ".schema", "SchemaInfo",
+                                    "CollectionRequest", "Request", true, true,
                                     Collections.emptySet(), typeSafeFinal, metamodelSuffixFinal));
                         }
                     }) //
