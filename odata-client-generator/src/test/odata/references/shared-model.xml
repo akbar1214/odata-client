@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Shared.Models" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <ComplexType Name="Address">
+                <Property Name="Street" Type="Edm.String"/>
+                <Property Name="City" Type="Edm.String"/>
+                <Property Name="State" Type="Edm.String"/>
+                <Property Name="ZipCode" Type="Edm.String"/>
+            </ComplexType>
+            <EnumType Name="Color">
+                <Member Name="Red" Value="0"/>
+                <Member Name="Green" Value="1"/>
+                <Member Name="Blue" Value="2"/>
+            </EnumType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

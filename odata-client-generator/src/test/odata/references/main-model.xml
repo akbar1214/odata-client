@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="shared-model.xml">
+        <edmx:Include Namespace="Shared.Models" Alias="shared"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="Main.App" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Customer">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="Id" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="Name" Type="Edm.String"/>
+                <Property Name="Address" Type="Shared.Models.Address"/>
+                <Property Name="FavoriteColor" Type="Shared.Models.Color"/>
+            </EntityType>
+            <EntityContainer Name="DefaultContainer">
+                <EntitySet Name="Customers" EntityType="Main.App.Customer"/>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

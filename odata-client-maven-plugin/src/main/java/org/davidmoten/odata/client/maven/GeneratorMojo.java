@@ -29,6 +29,7 @@ import com.github.davidmoten.guavamini.annotations.VisibleForTesting;
 import com.github.davidmoten.odata.client.generator.Generator;
 import com.github.davidmoten.odata.client.generator.Options;
 import com.github.davidmoten.odata.client.generator.SchemaOptions;
+import com.github.davidmoten.odata.client.generator.SchemaResolver;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
@@ -57,6 +58,9 @@ public class GeneratorMojo extends AbstractMojo {
     @Parameter(name = "outputDirectory", defaultValue = "${project.build.directory}/generated-sources/java")
     File outputDirectory;
 
+    @Parameter(name = "resolveReferences", defaultValue = "true")
+    boolean resolveReferences;
+
     @Parameter( defaultValue = "${project}", readonly = true )
     MavenProject project;
 
@@ -83,8 +87,9 @@ public class GeneratorMojo extends AbstractMojo {
         InputStream is = null;
         try {
             InputStream cis = GeneratorMojo.class.getResourceAsStream(metadata);
+            File metadataFile = null;
             if (cis == null) {
-                File metadataFile = new File(metadata);
+                metadataFile = new File(metadata);
                 System.out.println("metadataFile = " + metadataFile.getAbsolutePath());
                 System.out.println("enumDefaultValues = " + enumDefaultValues);
                 if (metadataFile.exists()) {
@@ -106,8 +111,16 @@ public class GeneratorMojo extends AbstractMojo {
             JAXBContext c = JAXBContext.newInstance(TDataServices.class);
             Unmarshaller unmarshaller = c.createUnmarshaller();
             TEdmx t = unmarshaller.unmarshal(new StreamSource(is), TEdmx.class).getValue();
-            // log schemas
-            List<Schema> schemas = t.getDataServices().getSchema();
+
+            // resolve edmx:Reference and edmx:Include directives
+            List<Schema> schemas;
+            if (resolveReferences && !t.getReference().isEmpty()) {
+                File baseDir = metadataFile != null ? metadataFile.getParentFile() : null;
+                schemas = SchemaResolver.resolve(t, baseDir);
+                getLog().info("Resolved " + schemas.size() + " schemas from primary and referenced metadata files");
+            } else {
+                schemas = t.getDataServices().getSchema();
+            }
             schemas.forEach(sch -> getLog().info("schema: " + sch.getNamespace()));
 
             // auto generate options when not configured
